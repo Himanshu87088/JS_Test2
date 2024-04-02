@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather API</title>
+    <style>
+        body{
+           text-align: center;
+           font-size: 40px;
+           background-color: rgb(92, 188, 233);
+          
+        }
+        h1{
+            text-shadow: 3px 5px 5px white;
+           text-decoration: overline underline;
+        }
+        div{
+            margin-left: 22%;
+            margin-top: 5%;
+        }
+        table,th,td{
+            border: 2px solid black;
+        }
+        th{
+            font-size: 30px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-weight: bolder;
+            background-color: antiquewhite;
+            text-align: center;
+        }
+        td{
+            font-size: 25px;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        tr{
+            text-align: center;
+        }
+        button{
+            font-size: 30px;
+        }
+        input{
+            font-size: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Weather Status</h1>
+    <input type="text" id="city" placeholder="Search Weather:">
+    <button onclick="WeatherReport()" id="btn">Search</button>
+    <div id="output"></div>
+   
+
+</body>
+<script>
+   
+    
+    async function FetchData(city) {
+        const apiKey = '256602efd7915a05fea15561fbfa0ad0';
+        const apiURL = `https://api.openweathermap.org/data/2.5/weather?APPID=${apiKey}&q=${city}&units=metric`;
+        try {
+            let data = await fetch(apiURL);
+            let dt = await data.json();
+            console.log(dt);
+
+            let city = dt.name;
+            let weather = dt.weather[0].main;
+            let humdty = dt.main.humidity;
+            let temp = dt.main.temp;
+            let visibility = dt.visibility;
+            let sunrise = new Date(dt.sys.sunrise * 1000).toLocaleTimeString();
+            let sunset = new Date(dt.sys.sunset * 1000).toLocaleTimeString();
+
+            let table=document.createElement('table');
+            table.innerHTML=`
+            <thead>
+                <tr>
+                    <th>City</th>
+                    <th>Weather</th>
+                    <th>Humidity</th>
+                    <th>Temperature</th>
+                    <th>Visibility</th>
+                    <th>Sunrise</th>
+                    <th>Sunset</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>${city}</td>
+                        <td>${weather}</td>
+                        <td>${humdty}</td>
+                        <td>${temp}</td>
+                        <td>${visibility}</td>
+                        <td>${sunrise}</td>
+                        <td>${sunset}</td>
+                    </tr>
+                    </tbody>`;
+                    document.getElementById('output').innerHTML="";
+                    document.getElementById('output').appendChild(table);
+
+        } catch (err) {
+            console.error("Network Error", err);
+        }
+    }
+
+    function WeatherReport(){
+        
+        let city=document.getElementById('city').value;
+        FetchData(city);
+    }
+
+
+    
+</script>
+
+</html>
